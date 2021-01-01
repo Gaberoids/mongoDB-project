@@ -6,7 +6,6 @@ from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 # this will allow to use code to
 # ... access the data on docs
-
 if os.path.exists("env.py"):
     import env
 
@@ -25,10 +24,8 @@ mongo = PyMongo(app)
 
 @app.route("/")
 @app.route("/get_tasks")
-def hello():
-    return "Hello World ... again!"
-
-
+# def hello():
+#     return "Hello World ... again!"
 def get_tasks():
     tasks = mongo.db.tasks.find()
     # .tasks. = collection

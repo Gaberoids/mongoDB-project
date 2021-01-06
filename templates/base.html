@@ -37,14 +37,14 @@
                     <li><a href="#">Manage Categories</a></li>
                     <li><a href="#">Log Out</a></li>
                     <li><a href="#">Log In</a></li>
-                    <li><a href="#">Register</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
                 </ul>
             </div>
         </nav>
 
         <ul class="sidenav" id="mobile-demo">
             <li><h4 class="center-align light-blue-text text-darken-4">Task Manager</h4></li>
-            <li><a href="{{ url_for('get_tasks') }}">Home</a></li>
+            <li><a href="{{ url_for('register') }}">Home</a></li>
             <li><a href="#">Profile</a></li>
             <li><a href="#">New Task</a></li>
             <li><a href="#">Manage Categories</a></li>
@@ -56,8 +56,28 @@
     </header>
     <!-- by convention we call content below -->
     <h1>I am part of the base template</h1>
+    
+    <section>
+        <!-- flash messages -->
+        {% with messages = get_flashed_messages() %}
+            <!-- in case there is more than one message, iterate -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="row flashes">
+                        <h4 class="light-blue lighten-4 center-aligh">{{ message }}</h4>
+
+                    </div>
+                {% endfor%}
+            {% endif %}
+        {% endwith %}
+    </section>
+
+    <main class = "container">
+
     {% block content %}
     {% endblock %}
+    
+    </main>
 
     <!-- for this project will get started with components using jquery instead of javascript . needs to be before materialize -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
@@ -70,6 +90,7 @@
     {% block scripts %}
     {% endblock %}
     <!-- for end custom scripts -->
+
 </body>
 
 </html>

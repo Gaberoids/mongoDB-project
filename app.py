@@ -3,9 +3,10 @@ from flask import (
     Flask, flash, render_template,
     redirect, request, session, url_for)
 from flask_pymongo import PyMongo
-from bson.objectid import ObjectId
-# this will allow to use code to
+from bson.objectid import ObjectId # this will allow to use code to
 # ... access the data on docs
+# below, for authentication Werkzeug
+from werkzeug.security import generate_password_hash, check_password_hash
 if os.path.exists("env.py"):
     import env
 
@@ -32,6 +33,32 @@ def get_tasks():
     return render_template("tasks.html", tasks=tasks)
     # tasks=tasks. first "task" = template .html will use
     # ... second "tasks" is the var tasks = mongo.db.tasks.fin...
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():  # name the function the same as the url from line above
+    if request.method == "POST":
+        # a check if username already exists in db
+        existing_user = mongo.db.users.find_one(
+            {"username": request.form.get("username").lower()})
+
+        if existing_user:
+            flash("Username already exists")
+            return redirect(url_for("register"))
+
+        register = {
+            "username": request.form.get("username").lower(),
+            "password": generate_password_hash(request.form.get("password"))
+        }
+        mongo.db.users.insert_one(register)
+
+        # put newly created user into
+        # ...session coockie -> session["coockie"] = ...value...
+        session["user"] = request.form.get("username").lower()
+        flash("Registration Successful!")
+
+
+    return render_template("register.html")
 
 
 if __name__ == "__main__":

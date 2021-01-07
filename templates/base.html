@@ -32,51 +32,60 @@
                 <a href="#" data-target="mobile-demo" class="sidenav-trigger right"><i class="fas fa-bars"></i></a>
                 <ul class="right hide-on-med-and-down">
                     <li><a href="{{ url_for('get_tasks') }}">Home</a></li>
-                    <li><a href="#">Profile</a></li>
+                    {% if session.user %}
+                    <li><a href="{{ url_for('profile', username=session['user']) }}">Profile</a></li>
                     <li><a href="#">New Task</a></li>
                     <li><a href="#">Manage Categories</a></li>
-                    <li><a href="#">Log Out</a></li>
+                    <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+                    {% else %}
                     <li><a href="{{ url_for('login') }}">Log In</a></li>
                     <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>
 
         <ul class="sidenav" id="mobile-demo">
-            <li><h4 class="center-align light-blue-text text-darken-4">Task Manager</h4></li>
+            <li>
+                <h4 class="center-align light-blue-text text-darken-4">Task Manager</h4>
+            </li>
             <li><a href="{{ url_for('get_tasks') }}">Home</a></li>
+            <!-- jinjia template stuff in between curly brakets -if- -->
+            {% if session.user %}
             <li><a href="{{ url_for('profile', username=session['user']) }}">Profile</a></li>
             <li><a href="#">New Task</a></li>
             <li><a href="#">Manage Categories</a></li>
-            <li><a href="#">Log Out</a></li>
+            <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            {% else %}
             <li><a href="{{ url_for('login') }}">Log In</a></li>
             <li><a href="{{ url_for('register') }}">Register</a></li>
+            {% endif %}
         </ul>
 
     </header>
     <!-- by convention we call content below -->
     <h1>I am part of the base template</h1>
-    
+
     <section>
         <!-- flash messages -->
         {% with messages = get_flashed_messages() %}
-            <!-- in case there is more than one message, iterate -->
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="row flashes">
-                        <h4 class="light-blue lighten-4 center-aligh">{{ message }}</h4>
+        <!-- in case there is more than one message, iterate -->
+        {% if messages %}
+        {% for message in messages %}
+        <div class="row flashes">
+            <h4 class="light-blue lighten-4 center-aligh">{{ message }}</h4>
 
-                    </div>
-                {% endfor%}
-            {% endif %}
+        </div>
+        {% endfor%}
+        {% endif %}
         {% endwith %}
     </section>
 
-    <main class = "container">
+    <main class="container">
 
-    {% block content %}
-    {% endblock %}
-    
+        {% block content %}
+        {% endblock %}
+
     </main>
 
     <!-- for this project will get started with components using jquery instead of javascript . needs to be before materialize -->

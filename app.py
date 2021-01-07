@@ -96,9 +96,24 @@ def profile(username):
     # ...["usename"] at the end of the line,
     # ...means that onely user name key is being
     # ...taken from the database
-    return render_template("profile.html", username=username)
+    # .
+    # return render_template("profile.html", username=username)
     # first username is from html page,
     # ...the second is the variable 2 lines above
+    # .
+    if session["user"]:
+        return render_template("profile.html", username=username)
+
+    return redirect(url_for("login"))
+
+
+# logout
+@app.route("/logout")
+def logout():
+    # remove user from session cookies
+    flash("You have been logged out")
+    session.pop("user")
+    return redirect(url_for("login"))
 
 
 if __name__ == "__main__":

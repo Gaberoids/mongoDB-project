@@ -3,7 +3,7 @@ from flask import (
     Flask, flash, render_template,
     redirect, request, session, url_for)
 from flask_pymongo import PyMongo
-from bson.objectid import ObjectId # this will allow to use code to
+from bson.objectid import ObjectId  # this will allow to use code to
 # ... access the data on docs
 # below, for authentication Werkzeug
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -52,13 +52,36 @@ def register():  # name the function the same as the url from line above
         }
         mongo.db.users.insert_one(register)
 
-        # put newly created user into
+        # put newly created user into session vasiable/
         # ...session coockie -> session["coockie"] = ...value...
         session["user"] = request.form.get("username").lower()
         flash("Registration Successful!")
-
-
     return render_template("register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        # check if username already exist in db
+        existing_user = mongo.db.users.find_one(
+            {"username": request.form.get("username").lower()})
+        if existing_user:
+            # ensure hashed password matches user input
+            if check_password_hash(
+                    existing_user["password"], request.form.get("password")):
+                session['user'] = request.form.get("username").lower()
+                flash("Welcome, {}".format(request.form.get("username")))
+            else:
+                # invalid password match
+                flash("incorrect Username and/or Password")
+                return redirect(url_for("login"))
+
+        else:
+            # invalid username match
+            flash("incorrect Username and/or Password")
+            return redirect(url_for("login"))
+
+    return render_template("login.html")
 
 
 if __name__ == "__main__":

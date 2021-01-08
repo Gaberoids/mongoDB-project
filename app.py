@@ -28,8 +28,9 @@ mongo = PyMongo(app)
 # def hello():
 #     return "Hello World ... again!"
 def get_tasks():
-    tasks = mongo.db.tasks.find()
+    tasks = list(mongo.db.tasks.find())
     # .tasks. = collection
+    # ... no list()= mongo cursor object
     return render_template("tasks.html", tasks=tasks)
     # tasks=tasks. first "task" = template .html will use
     # ... second "tasks" is the var tasks = mongo.db.tasks.fin...

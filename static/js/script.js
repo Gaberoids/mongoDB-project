@@ -2,4 +2,5 @@
 $(document).ready(function () {
     $('.sidenav').sidenav({ edge: "right" }); // sidenav show on the right https://materializecss.com/sidenav.html#options
     $('.collapsible').collapsible();  // this is for the acordedon collapsable items from materializecss too
+    $('.tooltipped').tooltip(); // materialized
 });

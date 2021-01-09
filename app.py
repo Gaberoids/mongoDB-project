@@ -117,8 +117,27 @@ def logout():
     return redirect(url_for("login"))
 
 
-@app.route("/add_task")
+@app.route("/add_task", methods=["GET", "POST"])
 def add_task():
+    if request.method == "POST":
+        is_urgent = "on" if request.form.get("is_urgent") else "off"
+        task = {
+            "category_name": request.form.get("category_name"),
+            "task_name": request.form.get("task_name"),
+            "task_description": request.form.get("task_description"),
+            "is_urgent": is_urgent,
+            "due_date": request.form.get("due_date"),
+            "created_by": session["user"]
+        }
+        mongo.db.tasks.insert_one(task)
+        # Optional: mongo.db.tasks.insert_one(request.form.to_dict())
+        # line above will add all values for name="" from
+        # ... add_task.html into a dictionary in mongo
+        #  we could use the ... to_dict() if we only wanna get
+        # ... the <form> data, but since we want the session[] too,
+        # ...we use the task dictionary inthe begging of the if statement
+        flash("Task Successfully Added")
+        return redirect(url_for("get_tasks"))
     categories = mongo.db.categories.find().sort("category_name", 1)
     # ... ", 1" is the order crescent or alphabetical
     return render_template("add_task.html", categories=categories)

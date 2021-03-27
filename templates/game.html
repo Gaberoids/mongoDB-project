@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Drinks for the Champ</h3>
+
+<!-- enter participant name -->
+<form method="POST" action="{{ url_for('add_player') }}">
+
+    <h6>New participant? Enter your name here :</h6>
+    <input type="text" name="input_new_player" id="input_new_player" placeholder="Participant's name">
+    <input type="number" name="input_n_drinks" id="input_n_drinks" placeholder="number of beers" min="0" max="1000">
+    <a type="button" href="{{ url_for('add_player') }}">Add Player</a>
+    <input type="submit" value="Submit">
+</form>
+
+------------------------------------------------
+<!-- Load all participants and the number of drinks -->
+
+{% for player in players_list %}
+
+<p>{{ player.name }}</p>
+<input id="numb_drinks" type="number" value="{{player.n_drinks}}">
+<a href="#">Delete</a>
+
+{% endfor %}
+<input type="button" value="{ url_for(rank_update_refresh)}">
+<!-- Rank of drinkers -->
+
+{% endblock %}

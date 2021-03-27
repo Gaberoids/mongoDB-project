@@ -36,6 +36,16 @@ def get_tasks():
     # ... second "tasks" is the var tasks = mongo.db.tasks.fin...
 
 
+@app.route("/search", methods=["POST", "GET"])
+def search():
+    query = request.form.get("query")
+    tasks = list(mongo.db.tasks.find({"$text": {"$search": query}}))
+    # dictionaries $text and $search.
+    # means that we want to perform search on any text index
+    # ...using the query variable
+    return render_template("tasks.html", tasks=tasks)
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():  # name the function the same as the url from line above
     if request.method == "POST":
@@ -215,6 +225,33 @@ def delete_category(category_id):
     mongo.db.categories.remove({"_id": ObjectId(category_id)})
     flash("Category successfully Deleted")
     return redirect(url_for("get_categories"))
+
+
+@app.route("/game", methods=["GET", "POST"])
+def game():
+    player_l = list(mongo.db.game.find())
+    tasks = list(mongo.db.tasks.find())
+    return render_template("game.html", players_list=player_l, tasks=tasks)
+
+
+@app.route("/add_player", methods=["GET", "POST"])
+def add_player():
+    if request.method == "POST":
+        print("before object--------------------------------------")
+        new_player_one = {
+            "name": request.form.get("input_new_player"),
+            "n_drinks": request.form.get("input_n_drinks")
+        }
+        mongo.db.game.insert_one(new_player_one)
+    if request.method == "POST":
+        category = {
+            "category_name": request.form.get("category_name")
+        }
+        mongo.db.categories.insert_one(category)
+        flash("New Category Added")
+
+    print("before return--------------------------------------")
+    return redirect(url_for("game"))
 
 
 if __name__ == "__main__":
